@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Masuk · PAD Insight OKUS{% endblock %}
+{% block auth_content %}
+<div class="login-wrap"><div class="login-card"><div class="brand login-brand"><div class="brand-mark">P</div><div><b>PAD Insight OKUS</b><small>SISTEM MONITORING PAD</small></div></div><span class="eyebrow">PROTOTIPE AKADEMIK</span><h1>Selamat datang</h1><p class="muted">Masuk untuk melihat dashboard dan mengelola data simulasi pendapatan daerah.</p>
+<form method="post" class="form-stack"><label>Email pengguna<input type="email" name="email" placeholder="admin@padokus.local" required></label><button class="btn primary" type="submit">Masuk ke aplikasi</button></form>
+<div class="demo-box"><b>Akun demo (tanpa kata sandi)</b><p>Administrator: admin@padokus.local</p><p>Petugas: petugas@padokus.local</p><p>Pimpinan: pimpinan@padokus.local</p></div><p class="tiny muted">Untuk penggunaan nyata, tambahkan autentikasi dengan password yang di-hash dan pengamanan sesi.</p></div></div>
+{% endblock %}

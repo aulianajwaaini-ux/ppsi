@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Data Pendapatan · PAD Insight OKUS{% endblock %}
+{% block content %}<div class="page-head"><div><span class="eyebrow">PENGELOLAAN DATA</span><h1>Data Pendapatan</h1><p class="muted">Tambah dan pantau catatan target serta realisasi PAD.</p></div><span class="demo-pill">DATA SIMULASI</span></div>
+<div class="panel"><h2>Tambah catatan pendapatan</h2><form method="post" class="form-grid">
+<label>Kategori<select name="category" required>{% for c in categories %}<option>{{ c }}</option>{% endfor %}</select></label>
+<label>Periode<input name="period" type="month" value="2026-10" required></label>
+<label class="wide">Uraian pendapatan<input name="description" placeholder="Contoh: Retribusi pasar" required></label>
+<label>Target (Rp)<input name="target" type="number" min="0" step="1" value="0" required></label>
+<label>Realisasi (Rp)<input name="realization" type="number" min="0" step="1" value="0" required></label>
+<label>Lokasi<input name="location" value="Muaradua" required></label><label>Catatan<input name="notes" placeholder="Opsional"></label>
+<div class="wide"><button class="btn primary" type="submit">＋ Simpan data</button></div></form></div>
+<div class="panel"><div class="panel-head"><h2>Daftar pendapatan</h2><form class="filters" method="get"><input name="q" value="{{ q }}" placeholder="Cari uraian, kategori, lokasi"><select name="category"><option value="">Semua kategori</option>{% for c in categories %}<option value="{{ c }}" {{ 'selected' if selected_category==c else '' }}>{{ c }}</option>{% endfor %}</select><button class="btn secondary">Filter</button></form></div>
+<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Kategori / Uraian</th><th>Lokasi</th><th>Target</th><th>Realisasi</th><th>Aksi</th></tr></thead><tbody>{% for r in rows %}<tr><td>{{ r.period }}</td><td><b>{{ r.category }}</b><small class="cell-sub">{{ r.description }}</small></td><td>{{ r.location }}</td><td>{{ r.target|rupiah }}</td><td>{{ r.realization|rupiah }}</td><td><form method="post" action="{{ url_for('delete_revenue', item_id=r.id) }}" onsubmit="return confirm('Hapus catatan ini?')"><button class="btn danger small">Hapus</button></form></td></tr>{% else %}<tr><td colspan="6">Data tidak ditemukan.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

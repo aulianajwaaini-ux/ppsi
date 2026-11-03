@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}Dashboard · PAD Insight OKUS{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="eyebrow">RINGKASAN EKSEKUTIF</span><h1>Dashboard PAD</h1><p class="muted">Pantau target dan realisasi pendapatan daerah dalam satu tampilan.</p></div><span class="demo-pill">DATA SIMULASI</span></div>
+<div class="metrics">
+<div class="metric"><span>Total Target</span><strong>{{ summary.target|rupiah }}</strong><small>Akumulasi seluruh catatan</small></div>
+<div class="metric"><span>Total Realisasi</span><strong>{{ summary.realization|rupiah }}</strong><small>Akumulasi seluruh catatan</small></div>
+<div class="metric"><span>Capaian Target</span><strong>{{ '%.1f'|format(summary.achievement) }}%</strong><small>Realisasi ÷ target × 100%</small></div>
+<div class="metric"><span>Selisih Target</span><strong>{{ summary.gap|rupiah }}</strong><small>Target dikurangi realisasi</small></div>
+</div>
+<div class="grid-two"><div class="panel"><div class="panel-head"><div><h2>Target vs Realisasi</h2><p class="muted">Per kategori pendapatan</p></div></div><canvas id="categoryChart" height="230"></canvas></div>
+<div class="panel"><div class="panel-head"><div><h2>Komposisi Realisasi</h2><p class="muted">Distribusi antar kategori</p></div></div><canvas id="compositionChart" height="230"></canvas></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Data terbaru</h2><a href="{{ url_for('revenues') }}" class="text-link">Lihat semua →</a></div></div>
+<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Kategori</th><th>Uraian</th><th>Target</th><th>Realisasi</th><th>Capaian</th></tr></thead><tbody>{% for r in recent %}<tr><td>{{ r.period }}</td><td>{{ r.category }}</td><td>{{ r.description }}</td><td>{{ r.target|rupiah }}</td><td>{{ r.realization|rupiah }}</td><td><span class="status {{ 'good' if r.target and r.realization/r.target>=1 else 'warn' }}">{{ '%.1f'|format(r.realization/r.target*100 if r.target else 0) }}%</span></td></tr>{% else %}<tr><td colspan="6">Belum ada data.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
+{% block scripts %}<script>
+const labels={{ categories|map(attribute='category')|list|tojson }};
+const targets={{ categories|map(attribute='target')|list|tojson }};
+const actuals={{ categories|map(attribute='realization')|list|tojson }};
+if(document.getElementById('categoryChart')) new Chart(document.getElementById('categoryChart'),{type:'bar',data:{labels,datasets:[{label:'Target',data:targets,backgroundColor:'#b8ccf6',borderRadius:5},{label:'Realisasi',data:actuals,backgroundColor:'#2563eb',borderRadius:5}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'Rp '+(v/1000000).toFixed(0)+' jt'}}}}});
+if(document.getElementById('compositionChart')) new Chart(document.getElementById('compositionChart'),{type:'doughnut',data:{labels,datasets:[{data:actuals,backgroundColor:['#2563eb','#0f9d8a','#f59e0b','#8b5cf6']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+</script>{% endblock %}

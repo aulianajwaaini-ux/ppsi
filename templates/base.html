@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PAD Insight OKUS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if session.get('user') %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">P</div><div><b>PAD Insight</b><small>OKU SELATAN · DEMO</small></div></div>
+    <div class="profile"><div class="avatar">{{ session.user.name[:1]|upper }}</div><div><b>{{ session.user.name }}</b><small>{{ session.user.role }}</small></div></div>
+    <nav>
+      <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}">▦ <span>Dashboard</span></a>
+      <a class="{{ 'active' if request.endpoint == 'revenues' else '' }}" href="{{ url_for('revenues') }}">▤ <span>Data Pendapatan</span></a>
+      <a class="{{ 'active' if request.endpoint == 'analysis' else '' }}" href="{{ url_for('analysis') }}">⌁ <span>Analisis PAD</span></a>
+      <a class="{{ 'active' if request.endpoint in ['reports','export_csv'] else '' }}" href="{{ url_for('reports') }}">▧ <span>Laporan</span></a>
+      {% if session.user.role == 'Administrator' %}<a class="{{ 'active' if request.endpoint == 'users' else '' }}" href="{{ url_for('users') }}">♙ <span>Manajemen Pengguna</span></a>{% endif %}
+      <a class="{{ 'active' if request.endpoint == 'settings' else '' }}" href="{{ url_for('settings') }}">⚙ <span>Pengaturan</span></a>
+    </nav>
+    <div class="sidebar-foot"><small>Bapenda OKU Selatan</small><small>Prototype akademik · v1.0</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('show')">☰</button><div><b>Monitoring Pendapatan Daerah</b><small>Kabupaten Ogan Komering Ulu Selatan · Fokus Muaradua</small></div><a class="logout" href="{{ url_for('logout') }}">Keluar ↗</a></header>
+    <section class="content">
+      {% with messages = get_flashed_messages() %}{% if messages %}<div class="flash">{% for message in messages %}<div>{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+      {% block content %}{% endblock %}
+      <footer>PAD Insight OKUS · Data pada versi demo adalah simulasi, bukan data resmi pemerintah.</footer>
+    </section>
+  </main>
+</div>
+{% else %}
+{% block auth_content %}{% endblock %}
+{% endif %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body></html>
